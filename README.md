@@ -15,7 +15,7 @@
 ### Wire schema 
 
 #### from Arduino:
-
+```
 D4 -> MP3 RX
 D5 -> MP3 TX
 
@@ -30,18 +30,19 @@ A0 -> Potentiometer middle pin
 3.3v -> RFID 3.3V
 5v -> Common 5v
 GND -> Common Ground 
-
+```
 
 #### When done wiring the Arduino, wire the following:
-
+```
 Common Ground -> RFID GND
 Common Ground -> MP3 GND
 Common Ground -> Potentiometer GND
 Common Ground -> LED Cathode
+
 Common 5v -> MP3 5V
 Common 5v -> Potentiometer 5V
-Common 5v -> LED Anode (via 330 Ohm resistor. Don't forget this!)
-
+Common 5v -> LED Anode via 330 Ohm resistor
+```
 ## Prepare Music
 On the SD card, arrange the music files so they are in a folder called 01. 
 
@@ -74,7 +75,7 @@ This method is more complicated and requires extra hardware but is useful if you
 - EC11 Rotary Encoder
 
 #### Wire schema
-
+```
 D2 -> EC11 A
 D3 -> EC11 B
 
@@ -92,6 +93,7 @@ A5 -> OLED SCL
 3.3v -> RFID 3.3v
 GND -> Common Ground -> OLED, RFID and EC11 GND
 5V -> Common 5v -> OLED and EC11 5v
+```
 
 #### Using the hardware writer
 Upload `writer_hardware.ino` to your Arduino.
