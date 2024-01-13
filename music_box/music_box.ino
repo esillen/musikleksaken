@@ -60,7 +60,9 @@ void loop()
   bool isCardPresent = checkIfCardPresent();
 
   if (!isCardPresent) {
-    mp3.pause();
+    if (mp3.getStatus() == STATUS_PLAY) {
+      mp3.pause();
+    }
     return;
   }
 
@@ -74,7 +76,6 @@ void loop()
   {
     return;
   }
-
 
   ReadDataFromBlock(BLOCK_NUMBER, readBlockData);
 
@@ -96,7 +97,11 @@ void loop()
   if (songPrefixInt8_t != songPrefixInt8_t_prev) {
     mp3.playWithFileName(folderName, songPrefixInt8_t);
   } else {
-    mp3.play();
+    if (mp3.getStatus() == STATUS_STOP) {
+      mp3.playWithFileName(folderName, songPrefixInt8_t); // Song has stopped playing, repeat it.
+    } else { // Resume playback
+      mp3.play();
+    }
   }
 
   songPrefixInt8_t_prev = songPrefixInt8_t;
