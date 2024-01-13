@@ -12,7 +12,7 @@
 #define BLOCK_NUMBER 2
 
 MP3 mp3(MP3_RX, MP3_TX);
-int8_t volume = 0x1e; //0~0x1e (30 adjustable level)
+int8_t volume; //0~0x1e (30 adjustable level)
 int8_t folderName = 0x01;
 int8_t songPrefixInt8_t_prev = 0x00;
 
@@ -20,10 +20,6 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 
 int analogPin = A0;
 int analogValue = 0;
-
-#define WRITE_BUFFER_LEN 16
-byte writeBufferLen = WRITE_BUFFER_LEN;
-byte writeBlockData[WRITE_BUFFER_LEN];
 
 #define READ_BUFFER_LEN 18
 byte readBufferLen = READ_BUFFER_LEN;
@@ -40,13 +36,13 @@ void setup()
   mfrc522.PCD_Init();   // Initiate MFRC522
   Serial.println("Approximate your card to the reader...");
   Serial.println();
-  for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
-
-
-}
+  for (byte i = 0; i < 6; i++) {
+    key.keyByte[i] = 0xFF;
+  }
+  volume = 1; // Resets volume. It's set by analog input.
+}                                                                                                                                                                           
 void loop()
 {
-
   analogValue = analogRead(analogPin);
   int8_t newVolume = map(analogValue, 0, 1015, 0x1e, 1);
   if (newVolume > 0x1e) {
@@ -133,40 +129,6 @@ bool checkIfCardPresent()
   }
   mfrc522.PICC_HaltA();
   return isCardPresent;
-}
-
-
-
-
-void WriteDataToBlock(int blockNum, byte blockData[])
-{
-  /* Authenticating the desired data block for write access using Key A */
-  status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, blockNum, &key, &(mfrc522.uid));
-  if (status != MFRC522::STATUS_OK)
-  {
-    Serial.print("Authentication failed for Write: ");
-    Serial.println(mfrc522.GetStatusCodeName(status));
-    return;
-  }
-  else
-  {
-    Serial.println("Authentication success");
-  }
-
-
-  /* Write data to the block */
-  status = mfrc522.MIFARE_Write(blockNum, blockData, writeBufferLen);
-  if (status != MFRC522::STATUS_OK)
-  {
-    Serial.print("Writing to Block failed: ");
-    Serial.println(mfrc522.GetStatusCodeName(status));
-    return;
-  }
-  else
-  {
-    Serial.println("Data was written into Block successfully");
-  }
-
 }
 
 
