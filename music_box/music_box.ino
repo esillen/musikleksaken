@@ -25,6 +25,8 @@ int analogValue = 0;
 byte readBufferLen = READ_BUFFER_LEN;
 byte readBlockData[READ_BUFFER_LEN];
 
+#define SONG_PREFIX_BUFFER_LEN 3
+
 MFRC522::StatusCode status;
 MFRC522::MIFARE_Key key;
 
@@ -79,9 +81,9 @@ void loop()
 
   ReadDataFromBlock(BLOCK_NUMBER, readBlockData);
 
-  byte songPrefixBuffer[6];
+  byte songPrefixBuffer[SONG_PREFIX_BUFFER_LEN];
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < SONG_PREFIX_BUFFER_LEN; i++) {
     songPrefixBuffer[i] = readBlockData[i];
   }
   Serial.println((char *)songPrefixBuffer);
@@ -171,12 +173,4 @@ void ReadDataFromBlock(int blockNum, byte readBlockData[])
     Serial.println("Block was read successfully");
   }
 
-}
-
-void PrintBuffer(byte buffer [], int bufferLen) {
-  for (int j = 0 ; j < bufferLen ; j++)
-  {
-    Serial.write(buffer[j]);
-  }
-  Serial.print("\n");
 }
