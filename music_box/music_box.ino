@@ -79,18 +79,18 @@ void loop()
     return;
   }
 
-  ReadDataFromBlock(BLOCK_NUMBER, readBlockData);
+  bool readSuccess = ReadDataFromBlock(BLOCK_NUMBER, readBlockData);
+  if (!readSuccess) {
+    return;
+  }
 
   byte songPrefixBuffer[SONG_PREFIX_BUFFER_LEN];
 
   for (int i = 0; i < SONG_PREFIX_BUFFER_LEN; i++) {
     songPrefixBuffer[i] = readBlockData[i];
   }
-  Serial.println((char *)songPrefixBuffer);
-
   String songPrefix = (char *) songPrefixBuffer;
   Serial.println(songPrefix);
-
   int songPrefixInt = songPrefix.toInt();
   Serial.println(songPrefixInt);
   int8_t songPrefixInt8_t = songPrefixInt;
@@ -139,7 +139,7 @@ bool checkIfCardPresent()
 }
 
 
-void ReadDataFromBlock(int blockNum, byte readBlockData[])
+bool ReadDataFromBlock(int blockNum, byte readBlockData[])
 {
   /* Authenticating the desired data block for Read access using Key A */
   status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, blockNum, &key, &(mfrc522.uid));
@@ -148,7 +148,7 @@ void ReadDataFromBlock(int blockNum, byte readBlockData[])
   {
     Serial.print("Authentication failed for Read: ");
     Serial.println(mfrc522.GetStatusCodeName(status));
-    return;
+    return false;
   }
   else
   {
@@ -166,11 +166,12 @@ void ReadDataFromBlock(int blockNum, byte readBlockData[])
   {
     Serial.print("Reading failed: ");
     Serial.println(mfrc522.GetStatusCodeName(status));
-    return;
+    return false;
   }
   else
   {
     Serial.println("Block was read successfully");
+    return true;
   }
 
 }
